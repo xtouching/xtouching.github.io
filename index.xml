@@ -1,0 +1,15 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Hugo Themes on Hugo Themes</title>
+		<link>https://example.com/</link>
+		<description>Recent content in Hugo Themes </description>
+		<generator>Hugo -- gohugo.io</generator>
+		
+  		<language>zh</language>
+		
+		<managingEditor>Page(&#34;Hugo Themes&#34;) (kkk-blog)</managingEditor>
+    	
+		<atom:link href="/" rel="self" type="application/rss+xml" />
+		
+	</channel>
+</rss>
