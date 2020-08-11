@@ -1,15 +1,25 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
-		<title>Hugo Themes on Hugo Themes</title>
-		<link>https://example.com/</link>
-		<description>Recent content in Hugo Themes </description>
+		<title>Xtouching Blog on Xtouching Blog</title>
+		<link>https://xtouching.github.io/</link>
+		<description>Recent content in Xtouching Blog </description>
 		<generator>Hugo -- gohugo.io</generator>
 		
-  		<language>zh</language>
+  		<language>en</language>
 		
-		<managingEditor>Page(&#34;Hugo Themes&#34;) (kkk-blog)</managingEditor>
+		<managingEditor>Page(&#34;Xtouching Blog&#34;)</managingEditor>
     	
+  		<lastBuildDate>Mon, 10 Aug 2020 13:08:12 +0800</lastBuildDate>
+		
 		<atom:link href="/" rel="self" type="application/rss+xml" />
 		
+		<item>
+			<title>如何优雅的将Axure站点内嵌在的项目中</title>
+			<link>https://xtouching.github.io/post/0810/</link>
+			<pubDate>Mon, 10 Aug 2020 13:08:12 +0800</pubDate>
+			<guid>https://xtouching.github.io/post/0810/</guid>
+			<description>&lt;p&gt;Axure文件可以通过官方的文件导出成一个资源包，部署到服务器即可在web页面浏览。在web页面浏览的时候是以index.html文件为入口文件，iframe内嵌了一个子页面，通过hash参数来控制子页面的具体显示。&lt;/p&gt;</description>
+		</item>
+      	
 	</channel>
 </rss>
