@@ -2,7 +2,27 @@
     
         
             {
-                "ref": "https://xtouching.github.io/post/0810/",
+                "ref": "http://xtouching.github.io/post/0828/",
+                "title": "如何循序渐进的推进老项目的eslint规范化",
+                "section": "post",
+                "date" : "2020.08.28",
+                "body": "协作开发eslint必不可少，，一个几未使用eslint的老项目如何渐进式的逐步推进eslint规范化？\n痛点  1，一下子全部改掉势必会有成千上万条的error信息, 短时间无法一下修改完成 2，可能会对线上代码有影响，无法一下子回归所有功能  解决思路 可以先保证每次commit的文件都是经过了eslint的校验的，至少我们是可以对每次的修改的文件有精力做review的，所以我们需要按照以下三个步骤：\n 1，保证每次提交代码前都能够进行代码检查 2，通过git的命令获取当前修改的文件列表 3，对指定文件进行eslint检查  实现代码 借助husky(文档)对代码进行预检\n// package.json { \u0026quot;husky\u0026quot;: { \u0026quot;hooks\u0026quot;: { \u0026quot;pre-commit\u0026quot;: \u0026quot;sh chech.sh\u0026quot;, } } } 检查即将commit的代码, 通过git diff找到改变的文件列表并进行eslint检查\ncheck.sh # get changed list list=`git diff --name-only src` if [[ $list ]]; then echo \u0026quot;[change list]\u0026quot; echo \u0026quot;$list\u0026quot; eslint --ext .js,.vue $list fi "
+            }
+        
+    ,
+        
+            {
+                "ref": "http://xtouching.github.io/post/0813/",
+                "title": "Element Ui是如何高效率实现实现组件之间的通信的",
+                "section": "post",
+                "date" : "2020.08.13",
+                "body": "Element Ui是如何高效率实现实现组件之间的通信的？\n事件监听和事件触发 vm.$emit( eventName, […args] ) vm.$on( event, callback ) 事件监听  // form-item.vue addValidateEvents() { const rules = this.getRules(); if (rules.length || this.required !== undefined) { this.$on('el.form.blur', this.onFieldBlur); this.$on('el.form.change', this.onFieldChange); } } 事件触发 因为可能在不同的多个组件里面都有监听这个事件，ElementUi使用了以下两种方式：\n dispatch函数是不停的向上去遍历父节点并且通过$emit去触发事件，到达根节点之后停止。 broadcast函数是不停的去遍历子节点并且通过$emit去触发事件，直到所有的子节点遍历完成之后停止。  // emitter.js function _broadcast(componentName, eventName, params) { this.$children.forEach(function (child) { var name = child.$options.componentName; if (name === componentName) { child.$emit.apply(child, [eventName].concat(params)); } else { _broadcast.apply(child, [componentName, eventName].concat([params])); } }); } exports.default = { methods: { dispatch: function dispatch(componentName, eventName, params) { var parent = this.$parent || this.$root; var name = parent.$options.componentName; while (parent \u0026amp;\u0026amp; (!name || name !== componentName)) { parent = parent.$parent; if (parent) { name = parent.$options.componentName; } } if (parent) { parent.$emit.apply(parent, [eventName].concat(params)); } }, broadcast: function broadcast(componentName, eventName, params) { _broadcast.call(this, componentName, eventName, params); } } };  // input.vue handleBlur(event) { this.focused = false; this.$emit('blur', event); if (this.validateEvent) { this.dispatch('ElFormItem', 'el.form.blur', [this.value]); } } mixins 为了能够方便快速的复用dispatch和broadcast方法，elementui采用了mixins混入的方式将emitter.js注入到个个需要的组件。\n export default { name: 'ElInput', componentName: 'ElInput', mixins: [emitter, Migrating], ... ... "
+            }
+        
+    ,
+        
+            {
+                "ref": "http://xtouching.github.io/post/0810/",
                 "title": "如何优雅的将Axure站点内嵌在的项目中",
                 "section": "post",
                 "date" : "2020.08.10",

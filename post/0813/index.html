@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-<title>About Me</title>
+<title>Element Ui是如何高效率实现实现组件之间的通信的</title>
 
 
   
@@ -67,10 +67,16 @@
 
     <div class="intro-header">
       <div class="container">
-        <div class="page-heading">
+        <div class="post-heading">
           
-            <h1>About Me</h1>
+            <h1>Element Ui是如何高效率实现实现组件之间的通信的</h1>
           
+          
+            <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>&nbsp;Aug 13, 2020
+  
+</span>
+
           
         </div>
       </div>
@@ -82,8 +88,76 @@
   <div class="container" role="main">
     <article class="article" class="blog-post">
       
-    <p>联系邮箱：1592931016@qq.com</p>
+    <p>Element Ui是如何高效率实现实现组件之间的通信的？</p>
+<h4 id="事件监听和事件触发">事件监听和事件触发</h4>
+<pre><code>vm.$emit( eventName, […args] )
+vm.$on( event, callback )
+</code></pre><h4 id="事件监听">事件监听</h4>
+<pre><code>  // form-item.vue
+  addValidateEvents() {
+    const rules = this.getRules();
+    if (rules.length || this.required !== undefined) {
+      this.$on('el.form.blur', this.onFieldBlur);
+      this.$on('el.form.change', this.onFieldChange);
+    }
+  }
+</code></pre><h4 id="事件触发">事件触发</h4>
+<p>因为可能在不同的多个组件里面都有监听这个事件，ElementUi使用了以下两种方式：</p>
+<ul>
+<li><strong>dispatch</strong>函数是不停的向上去遍历父节点并且通过$emit去触发事件，到达根节点之后停止。</li>
+<li><strong>broadcast</strong>函数是不停的去遍历子节点并且通过$emit去触发事件，直到所有的子节点遍历完成之后停止。</li>
+</ul>
+<pre><code>// emitter.js
 
+function _broadcast(componentName, eventName, params) {
+  this.$children.forEach(function (child) {
+    var name = child.$options.componentName;
+
+    if (name === componentName) {
+      child.$emit.apply(child, [eventName].concat(params));
+    } else {
+      _broadcast.apply(child, [componentName, eventName].concat([params]));
+    }
+  });
+}
+exports.default = {
+  methods: {
+    dispatch: function dispatch(componentName, eventName, params) {
+      var parent = this.$parent || this.$root;
+      var name = parent.$options.componentName;
+
+      while (parent &amp;&amp; (!name || name !== componentName)) {
+        parent = parent.$parent;
+
+        if (parent) {
+          name = parent.$options.componentName;
+        }
+      }
+      if (parent) {
+        parent.$emit.apply(parent, [eventName].concat(params));
+      }
+    },
+    broadcast: function broadcast(componentName, eventName, params) {
+      _broadcast.call(this, componentName, eventName, params);
+    }
+  }
+};
+</code></pre><pre><code>  // input.vue
+  handleBlur(event) {
+    this.focused = false;
+    this.$emit('blur', event);
+    if (this.validateEvent) {
+      this.dispatch('ElFormItem', 'el.form.blur', [this.value]);
+    }
+  }
+</code></pre><h4 id="mixins">mixins</h4>
+<p>为了能够方便快速的复用<strong>dispatch</strong>和<strong>broadcast</strong>方法，elementui采用了mixins混入的方式将emitter.js注入到个个需要的组件。</p>
+<pre><code> export default {
+    name: 'ElInput',
+    componentName: 'ElInput',
+    mixins: [emitter, Migrating],
+    ... ...
+</code></pre>
 
 
       
