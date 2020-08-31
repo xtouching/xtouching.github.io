@@ -2,6 +2,16 @@
     
         
             {
+                "ref": "https://xtouching.github.io/post/0831/",
+                "title": "BUG: macOS 10.15.4 post 请求跨域报错",
+                "section": "post",
+                "date" : "2020.08.31",
+                "body": "windows系统和一部分macOS系统都均可正常访问，只有特定的macOS版本会跨域报错。\n通过对比其他接口发现，是因为Access-Control-Allow-Headers里面可能出现了一些不应该配置的参数导致的\n"
+            }
+        
+    ,
+        
+            {
                 "ref": "https://xtouching.github.io/post/0828/",
                 "title": "如何循序渐进的推进老项目的eslint规范化",
                 "section": "post",

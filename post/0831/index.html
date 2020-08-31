@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-<title>Posts</title>
+<title>BUG: macOS 10.15.4 post 请求跨域报错</title>
 
 
   
@@ -69,7 +69,7 @@
       <div class="container">
         <div class="post-heading">
           
-            <h1>Posts</h1>
+            <h1>BUG: macOS 10.15.4 post 请求跨域报错</h1>
           
           
             <span class="meta-post">
@@ -85,88 +85,38 @@
 
 
     
-<div class="container" role="main">
-    <div class="posts-list">
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
       
-        
-      
+    <p>windows系统和一部分macOS系统都均可正常访问，只有特定的macOS版本会跨域报错。</p>
+<p><img src="https://i.loli.net/2020/08/31/uNdzS1E9oThCsaj.png" alt=""></p>
+<p><strong>通过对比其他接口发现，是因为Access-Control-Allow-Headers里面可能出现了一些不应该配置的参数导致的</strong></p>
+<p><img src="https://i.loli.net/2020/08/31/HXBTIWQmn2alZkS.png" alt=""></p>
 
-      
-        <article class="post-preview">
-  <a href="https://xtouching.github.io/post/0831/">
-      <h2 class="post-title">BUG: macOS 10.15.4 post 请求跨域报错</h2>
-  </a>
-  <div class="post-entry">
-    
-      <p><p>windows系统和一部分macOS系统都均可正常访问，只有特定的macOS版本会跨域报错。</p></p>
-        <a href="https://xtouching.github.io/post/0831/" class="post-read-more">Read More</a>
-    
-  </div>
-
-  <div class="postmeta">
-    <span class="meta-post">
-  <i class="fa fa-calendar-alt"></i>&nbsp;Aug 31, 2020
-  
-</span>
-
-  </div>
-</article>
 
       
-        <article class="post-preview">
-  <a href="https://xtouching.github.io/post/0828/">
-      <h2 class="post-title">如何循序渐进的推进老项目的eslint规范化</h2>
-  </a>
-  <div class="post-entry">
+    </article>
     
-      <p><p>协作开发eslint必不可少，，一个几未使用eslint的老项目如何渐进式的逐步推进eslint规范化？</p></p>
-        <a href="https://xtouching.github.io/post/0828/" class="post-read-more">Read More</a>
     
-  </div>
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        (function() {
+            
+            
+            if (window.location.hostname == "localhost") return;
 
-  <div class="postmeta">
-    <span class="meta-post">
-  <i class="fa fa-calendar-alt"></i>&nbsp;Aug 28, 2020
-  
-</span>
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            var disqus_shortname = 'yourdisqusshortname';
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="https://disqus.com/" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
   </div>
-</article>
-
-      
-        <article class="post-preview">
-  <a href="https://xtouching.github.io/post/0813/">
-      <h2 class="post-title">Element Ui是如何高效率实现实现组件之间的通信的</h2>
-  </a>
-  <div class="post-entry">
-    
-      <p><p>Element Ui是如何高效率实现实现组件之间的通信的？</p></p>
-        <a href="https://xtouching.github.io/post/0813/" class="post-read-more">Read More</a>
-    
-  </div>
-
-  <div class="postmeta">
-    <span class="meta-post">
-  <i class="fa fa-calendar-alt"></i>&nbsp;Aug 13, 2020
-  
-</span>
-
-  </div>
-</article>
-
-      
-      </div>
-    
-    <ul class="pager">
-      
-      
-        <li class="next">
-          <a href="https://xtouching.github.io/post/page/2/">Older &rarr;</a>
-        </li>
-      
-    </ul>
-  
-</div>
 
     <footer>
   <div class="container">

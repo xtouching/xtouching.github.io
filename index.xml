@@ -9,10 +9,18 @@
 		
 		<managingEditor>Page(&#34;Xtouching Blog&#34;)</managingEditor>
     	
-  		<lastBuildDate>Fri, 28 Aug 2020 11:41:44 +0800</lastBuildDate>
+  		<lastBuildDate>Mon, 31 Aug 2020 19:25:20 +0800</lastBuildDate>
 		
 		<atom:link href="/" rel="self" type="application/rss+xml" />
 		
+		<item>
+			<title>BUG: macOS 10.15.4 post 请求跨域报错</title>
+			<link>https://xtouching.github.io/post/0831/</link>
+			<pubDate>Mon, 31 Aug 2020 19:25:20 +0800</pubDate>
+			<guid>https://xtouching.github.io/post/0831/</guid>
+			<description>&lt;p&gt;windows系统和一部分macOS系统都均可正常访问，只有特定的macOS版本会跨域报错。&lt;/p&gt;</description>
+		</item>
+      	
 		<item>
 			<title>如何循序渐进的推进老项目的eslint规范化</title>
 			<link>https://xtouching.github.io/post/0828/</link>
