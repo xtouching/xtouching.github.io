@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+<title>如何优雅的将Axure站点内嵌在的项目中</title>
+
+
+  
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-XXXXXXXX-XX"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-XXXXXXXX-XX');
+  </script>
+  
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="alternate" type="application/rss+xml" href="https://xtouching.github.io/index.xml" title="Xtouching Blog">
+
+<link id="dark-mode-theme" rel="stylesheet" href="https://xtouching.github.io/css/dark.css" />
+<link rel="stylesheet" href="https://xtouching.github.io/fontawesome/css/all.min.css" />
+
+<script src="https://xtouching.github.io/js/bundle.js"></script>
+<script src="https://xtouching.github.io/js/instantpage.js" type="module" defer></script>
+<meta name="generator" content="Hugo 0.82.0" />
+  </head>
+  <body>
+    
+  
+
+
+
+
+  <header>
+    <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+        
+          <li><a href="/" name="blog"><i class="fas fa-home fa-lg"></i></a></li>
+        
+      
+        
+          <li><a href="/about/" name="About"><i class="fas fa-user fa-lg"></i></a></li>
+        
+      
+    </ul>
+  </div>
+</nav>
+
+    <div class="intro-header">
+      <div class="container">
+        <div class="post-heading">
+          
+            <h1>如何优雅的将Axure站点内嵌在的项目中</h1>
+          
+          
+            <span class="meta-post">
+  <i class="fa fa-calendar-alt"></i>&nbsp;Aug 10, 2020
+  
+</span>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+  <div class="container" role="main">
+    <article class="article" class="blog-post">
+      
+    <p>Axure文件可以通过官方的文件导出成一个资源包，部署到服务器即可在web页面浏览。在web页面浏览的时候是以index.html文件为入口文件，iframe内嵌了一个子页面，通过hash参数来控制子页面的具体显示。</p>
+<p><img src="https://i.loli.net/2020/08/11/MFJm7HBE3gPGZTQ.png" alt="">
+<img src="https://i.loli.net/2020/08/11/YFGSzdNWjkA3o7s.png" alt=""></p>
+<h3 id="需求分析">需求分析</h3>
+<ul>
+<li>需要将这个Axure的页面内嵌至另外一个项目的页面中</li>
+<li>需要实现分页预览</li>
+</ul>
+<p>内嵌页面选择通过iframe来实现，导致目前的页面层级结构比较复杂，一共有三个层级，嵌套了两层iframe框架，<strong>目前的难点是如何在外层监听Axure内部页面的变化</strong>。</p>
+<pre><code>  --- 主站点
+  --- iframe Axure站点的入口页面
+  --- iframe Axure站点内嵌的子页面
+</code></pre><h3 id="方案思考">方案思考</h3>
+<p>目前问题是如何捕捉到页面的变化，通过阅读Axure包体的源码，发现在以下目录有一个<strong>messagecenter.js</strong>文件，对目录的变化做了消息监听。</p>
+<p><img src="https://i.loli.net/2020/08/11/kpaUyFHOEgIMBrW.png" alt=""></p>
+<pre><code>_messageCenter.dispatchMessageRecursively = function(message, data) {
+        console.log(&quot;dispatched to &quot; + window.location.toString());
+
+        // dispatch to the top center first
+        _messageCenter.dispatchMessage(message, data);
+
+        $('iframe').each(function(index, frame) {
+            //try,catch to handle permissions error in FF when loading pages from another domain
+            try {
+                if (frame.contentWindow.$axure &amp;&amp; frame.contentWindow.$axure.messageCenter) {
+                    frame.contentWindow.$axure.messageCenter.dispatchMessageRecursively(message, data);
+                }
+            }catch(e) {}
+        });
+    };
+</code></pre><p>于是我们找到了可以去捕获消息的来源，因为涉及到页面跨域，所以采用了<strong>PostMessage</strong>作为子页面向外层页面传输信息的工具，于是有以下两种方案</p>
+<ul>
+<li>1，<strong>上传Axure包体的时候，使用修改过的messagecenter.js覆盖掉这个文件</strong></li>
+<li>2，<strong>上传Axure包体的时候，注入patch文件</strong></li>
+</ul>
+<p>考虑到以后可能还有其他需求或者bug修复，直接修改messagecenter.js会导致已经发布的项目需要重新上传，<strong>采取patch的方式更新，以后的修改可以同步到之前的项目</strong>，于是选择了第二种方案。</p>
+<h3 id="代码实现">代码实现</h3>
+<p><img src="https://i.loli.net/2020/08/11/ZbFqEPgnIyH7L1Q.png" alt=""></p>
+<pre><code>// patch.js
+
+;(function(){
+  // [202087 patch] 
+  var oldConsole = console.log;
+  var lastSendHref = null
+  console.log = function(str){
+    var regStr = str.match(/dispatched\s+to\s+(.+)/);
+    var href = regStr &amp;&amp; regStr[1]
+    if(lastSendHref !== href &amp;&amp; /index.html/.test(href)){
+      top.postMessage({
+        href: href,
+        title: document.title
+      }, '*');
+      lastSendHref = href;
+    }
+    oldConsole(str);
+  }
+})();
+
+</code></pre><p>再上传Axure包体的时候只需要给index.html注入一个部署在CDN的patch脚本，<strong>通过复写console.log的方案，监听messagecenter.js内的打印消息</strong>，捕捉到消息之后通过PostMessage发送给外层。不直接去修改messagecenter.js原本的函数是为了遵循开发的原则，修改最小化。</p>
+<p><strong>外层的监听函数</strong></p>
+<pre><code>window.addEventListener('message', function(event){
+    let { title = '', href = '' } = event.data || {};
+    // 接受到来自于iframe内嵌的网页修改
+    if(!/index\.html/.test(href)) return;
+    let childHash = href.split('index.html#')[1]
+    if(!childHash) return;
+    let nowHash = window.location.hash;
+    if(nowHash){
+      // 可能子目录切换，保持 id 之前的参数不变
+      nowHash = nowHash.split('&amp;id')[0]
+    }
+    window.location.hash = nowHash + '&amp;' + childHash
+  }, false)
+</code></pre><p>这样就实现了外层监听Axure页面的页面变化</p>
+<p><img src="https://i.loli.net/2020/08/11/ihXjHTq4R8c9nkd.png" alt=""></p>
+
+
+      
+    </article>
+    
+    
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        (function() {
+            
+            
+            if (window.location.hostname == "localhost") return;
+
+            var dsq = document.createElement('script');
+            dsq.type = 'text/javascript';
+            dsq.async = true;
+            var disqus_shortname = 'yourdisqusshortname';
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+
+  </div>
+
+    <footer>
+  <div class="container">
+    <p class="credits copyright">
+      <a href="https://xtouching.github.io/about"></a>
+      &nbsp;&copy;
+      2020
+
+      
+        &nbsp;/&nbsp;
+        <a href="https://xtouching.github.io/">Xtouching Blog</a>
+      
+
+      &nbsp;&ndash;&nbsp;
+      <i class="fas fa-moon" id="dark-mode-toggle"></i>
+
+      <p class="credits theme-by">
+        Powered By <a href="https://gohugo.io">Hugo</a>&nbsp;Theme <a href="https://github.com/matsuyoshi30/harbor">Harbor</a>
+      </p>
+    </p>
+  </div>
+</footer>
+
+  </body>
+</html>

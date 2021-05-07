@@ -9,7 +9,49 @@
 		
 		<managingEditor>Page(&#34;Xtouching Blog&#34;)</managingEditor>
     	
+  		<lastBuildDate>Mon, 31 Aug 2020 19:25:20 +0800</lastBuildDate>
+		
 		<atom:link href="/" rel="self" type="application/rss+xml" />
 		
+		<item>
+			<title>BUG: macOS 10.15.4 post 请求跨域报错</title>
+			<link>https://xtouching.github.io/post/0831/</link>
+			<pubDate>Mon, 31 Aug 2020 19:25:20 +0800</pubDate>
+			<guid>https://xtouching.github.io/post/0831/</guid>
+			<description>&lt;p&gt;windows系统和一部分macOS系统都均可正常访问，只有特定的macOS版本会跨域报错。&lt;/p&gt;</description>
+		</item>
+      	
+		<item>
+			<title>如何循序渐进的推进老项目的eslint规范化</title>
+			<link>https://xtouching.github.io/post/0828/</link>
+			<pubDate>Fri, 28 Aug 2020 11:41:44 +0800</pubDate>
+			<guid>https://xtouching.github.io/post/0828/</guid>
+			<description>&lt;p&gt;协作开发eslint必不可少，，一个几未使用eslint的老项目如何渐进式的逐步推进eslint规范化？&lt;/p&gt;</description>
+		</item>
+      	
+		<item>
+			<title>Element Ui是如何高效率实现实现组件之间的通信的</title>
+			<link>https://xtouching.github.io/post/0813/</link>
+			<pubDate>Thu, 13 Aug 2020 20:11:37 +0800</pubDate>
+			<guid>https://xtouching.github.io/post/0813/</guid>
+			<description>&lt;p&gt;Element Ui是如何高效率实现实现组件之间的通信的？&lt;/p&gt;</description>
+		</item>
+      	
+		<item>
+			<title>如何优雅的将Axure站点内嵌在的项目中</title>
+			<link>https://xtouching.github.io/post/0415/</link>
+			<pubDate>Mon, 10 Aug 2020 13:08:12 +0800</pubDate>
+			<guid>https://xtouching.github.io/post/0415/</guid>
+			<description>&lt;p&gt;Axure文件可以通过官方的文件导出成一个资源包，部署到服务器即可在web页面浏览。在web页面浏览的时候是以index.html文件为入口文件，iframe内嵌了一个子页面，通过hash参数来控制子页面的具体显示。&lt;/p&gt;</description>
+		</item>
+      	
+		<item>
+			<title>如何优雅的将Axure站点内嵌在的项目中</title>
+			<link>https://xtouching.github.io/post/0810/</link>
+			<pubDate>Mon, 10 Aug 2020 13:08:12 +0800</pubDate>
+			<guid>https://xtouching.github.io/post/0810/</guid>
+			<description>&lt;p&gt;Axure文件可以通过官方的文件导出成一个资源包，部署到服务器即可在web页面浏览。在web页面浏览的时候是以index.html文件为入口文件，iframe内嵌了一个子页面，通过hash参数来控制子页面的具体显示。&lt;/p&gt;</description>
+		</item>
+      	
 	</channel>
 </rss>
