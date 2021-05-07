@@ -32,16 +32,6 @@
     ,
         
             {
-                "ref": "https://xtouching.github.io/post/0415/",
-                "title": "如何优雅的将Axure站点内嵌在的项目中",
-                "section": "post",
-                "date" : "2020.08.10",
-                "body": "Axure文件可以通过官方的文件导出成一个资源包，部署到服务器即可在web页面浏览。在web页面浏览的时候是以index.html文件为入口文件，iframe内嵌了一个子页面，通过hash参数来控制子页面的具体显示。\n需求分析  需要将这个Axure的页面内嵌至另外一个项目的页面中 需要实现分页预览  内嵌页面选择通过iframe来实现，导致目前的页面层级结构比较复杂，一共有三个层级，嵌套了两层iframe框架，目前的难点是如何在外层监听Axure内部页面的变化。\n --- 主站点 --- iframe Axure站点的入口页面 --- iframe Axure站点内嵌的子页面 方案思考 目前问题是如何捕捉到页面的变化，通过阅读Axure包体的源码，发现在以下目录有一个messagecenter.js文件，对目录的变化做了消息监听。\n_messageCenter.dispatchMessageRecursively = function(message, data) { console.log(\u0026quot;dispatched to \u0026quot; + window.location.toString()); // dispatch to the top center first _messageCenter.dispatchMessage(message, data); $('iframe').each(function(index, frame) { //try,catch to handle permissions error in FF when loading pages from another domain try { if (frame.contentWindow.$axure \u0026amp;\u0026amp; frame.contentWindow.$axure.messageCenter) { frame.contentWindow.$axure.messageCenter.dispatchMessageRecursively(message, data); } }catch(e) {} }); }; 于是我们找到了可以去捕获消息的来源，因为涉及到页面跨域，所以采用了PostMessage作为子页面向外层页面传输信息的工具，于是有以下两种方案\n 1，上传Axure包体的时候，使用修改过的messagecenter.js覆盖掉这个文件 2，上传Axure包体的时候，注入patch文件  考虑到以后可能还有其他需求或者bug修复，直接修改messagecenter.js会导致已经发布的项目需要重新上传，采取patch的方式更新，以后的修改可以同步到之前的项目，于是选择了第二种方案。\n代码实现 // patch.js ;(function(){ // [202087 patch] var oldConsole = console.log; var lastSendHref = null console.log = function(str){ var regStr = str.match(/dispatched\\s+to\\s+(.+)/); var href = regStr \u0026amp;\u0026amp; regStr[1] if(lastSendHref !== href \u0026amp;\u0026amp; /index.html/.test(href)){ top.postMessage({ href: href, title: document.title }, '*'); lastSendHref = href; } oldConsole(str); } })(); 再上传Axure包体的时候只需要给index.html注入一个部署在CDN的patch脚本，通过复写console.log的方案，监听messagecenter.js内的打印消息，捕捉到消息之后通过PostMessage发送给外层。不直接去修改messagecenter.js原本的函数是为了遵循开发的原则，修改最小化。\n外层的监听函数\nwindow.addEventListener('message', function(event){ let { title = '', href = '' } = event.data || {}; // 接受到来自于iframe内嵌的网页修改 if(!/index\\.html/.test(href)) return; let childHash = href.split('index.html#')[1] if(!childHash) return; let nowHash = window.location.hash; if(nowHash){ // 可能子目录切换，保持 id 之前的参数不变 nowHash = nowHash.split('\u0026amp;id')[0] } window.location.hash = nowHash + '\u0026amp;' + childHash }, false) 这样就实现了外层监听Axure页面的页面变化\n"
-            }
-        
-    ,
-        
-            {
                 "ref": "https://xtouching.github.io/post/0810/",
                 "title": "如何优雅的将Axure站点内嵌在的项目中",
                 "section": "post",
